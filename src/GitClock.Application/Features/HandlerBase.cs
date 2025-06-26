@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using GitClock.Common.Exceptions;
 using MediatR;
 
 namespace GitClock.Application.Features
@@ -8,23 +9,23 @@ namespace GitClock.Application.Features
     {
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken)
         {
-            //if (validations != null)
-            //{
-            //    var list = new List<InvalidParameterValueException>();
+            if (validations != null)
+            {
+                var list = new List<InvalidParameterValueException>();
 
-            //    foreach (var validator in validations)
-            //    {
-            //        var validationResult = await validator.ValidateAsync(new ValidationContext<TRequest>(request), cancellationToken);
-            //        foreach (var error in validationResult.Errors)
-            //        {
-            //            var exception = new InvalidParameterValueException(error.PropertyName);
-            //            list.Add(exception);
-            //        }
-            //    }
+                foreach (var validator in validations)
+                {
+                    var validationResult = await validator.ValidateAsync(new ValidationContext<TRequest>(request), cancellationToken);
+                    foreach (var error in validationResult.Errors)
+                    {
+                        var exception = new InvalidParameterValueException(error.PropertyName);
+                        list.Add(exception);
+                    }
+                }
 
-            //    if (list.Count > 0)
-            //        throw new AggregateException(list);
-            //}
+                if (list.Count > 0)
+                    throw new AggregateException(list);
+            }
 
             return await ProcessHandler(request, cancellationToken);
         }

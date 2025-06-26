@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using FluentValidation;
+using GitClock.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,31 +14,11 @@ namespace GitClock.Application.Features.Commands.Tasks.CreateTask
         {
             _validators = validators;
         }
-        public override Task<CreateTaskCommandResponse> ProcessHandler(CreateTaskCommand request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
-[Route("api/v1/price-types")]
-public class PriceTypesController(IMediator mediator) : PocMediatRController
-{
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post([FromBody] CreatePriceTypeCommand request)
-    {
-        await mediator.Send(request);
-        return Created();
-    }
-}
+        public override async Task<CreateTaskCommandResponse> ProcessHandler(CreateTaskCommand request, CancellationToken cancellationToken)
+        { 
+            var task = new TaskEntity(request.PersonName, request.Description, request.StartDate, request.EndDate, request.HourlyRate);
+            return new CreateTaskCommandResponse { Id = task.Id};
 
-public static class MediatorConfiguration
-{
-    public static IServiceCollection AddMediator(this IServiceCollection services)
-    {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(HandlerBase<,>).Assembly));
-        return services;
+        }
     }
 }

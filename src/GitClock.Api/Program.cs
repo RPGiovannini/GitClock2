@@ -1,21 +1,64 @@
+using FluentValidation.AspNetCore;
+using GitClock.Api.Middlewares;
+using GitClock.Application.Configurations;
+using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenLocalhost(5000); // HTTP
+    serverOptions.ListenLocalhost(5001, options => options.UseHttps()); // HTTPS
+});
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API Gerenciador de Tarefas",
+        Version = "v1",
+        Description = "API para gerenciamento de tarefas",
+
+        License = new OpenApiLicense
+        {
+            Name = "Uso Interno"
+        }
+    });
+});
+
+builder.Services.AddApplication();
+builder.Services.AddFluentValidation();
 builder.Services.AddOpenApi();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
+
 {
-    app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gerenciador de Tarefas v1"));
 }
 
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
+app.UseMiddleware<ControllerMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
