@@ -1,9 +1,10 @@
 using FluentValidation.AspNetCore;
 using GitClock.Api.Middlewares;
 using GitClock.Application.Configurations;
+using GitClock.Common.Translations.Languages;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
-
+var supportedCultures = new string[] { AcceptedLanguages.En_US, AcceptedLanguages.Pt_Br };
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.ListenLocalhost(5000); // HTTP
@@ -58,7 +59,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+// Aplicar configuração de localização
+var LocalizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture(AcceptedLanguages.En_US)
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(LocalizationOptions);
+
 app.UseMiddleware<ControllerMiddleware>();
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -11,6 +11,7 @@ namespace GitClock.Application.Features.Commands.Tasks.CreateTask
     {
         private readonly IEnumerable<AbstractValidator<CreateTaskCommand>> _validators;
         public CreateTaskCommandHandler(IEnumerable<AbstractValidator<CreateTaskCommand>> validators) : base(validators)
+        
         {
             _validators = validators;
         }
