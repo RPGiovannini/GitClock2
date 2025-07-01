@@ -2,6 +2,8 @@ using FluentValidation.AspNetCore;
 using GitClock.Api.Middlewares;
 using GitClock.Application.Configurations;
 using GitClock.Common.Translations.Languages;
+using GitClock.Infra;
+using GitClock.Infra.Configurations;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var supportedCultures = new string[] { AcceptedLanguages.En_US, AcceptedLanguages.Pt_Br };
@@ -33,6 +35,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddApplication();
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddInfrastructure();
 builder.Services.AddFluentValidation();
 builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>
