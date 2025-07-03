@@ -4,6 +4,10 @@ using GitClock.Application.Configurations;
 using GitClock.Common.Translations.Languages;
 using GitClock.Infra;
 using GitClock.Infra.Configurations;
+using GitClock.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var supportedCultures = new string[] { AcceptedLanguages.En_US, AcceptedLanguages.Pt_Br };
@@ -16,6 +20,8 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
+builder.Services.AddDbContext<GitClockContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -60,7 +66,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gerenciador de Tarefas v1"));
 }
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<GitClockContext>();
+    db.Database.Migrate(); // Applies any pending migrations
+}
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 

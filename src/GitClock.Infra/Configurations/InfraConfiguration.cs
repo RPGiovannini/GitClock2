@@ -12,8 +12,7 @@ public static class InfraConfiguration
     {
 
         services.AddDbContext<GitClockContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("GitClock.Infra")));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         return services;
     }
 }

@@ -4,10 +4,16 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>ff646230-9d1a-4745-98ad-01e9d5056ee4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DependencyInjection.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
     	<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
@@ -16,6 +22,10 @@
 		</PackageReference>
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.1" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
