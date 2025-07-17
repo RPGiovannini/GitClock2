@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using GitClock.Application.Features.Commands.Tasks.CreateTask;
 using GitClock.Application.Features.Commands.Tasks.UpdateTask;
+using GitClock.Application.Features.Commands.Tasks.DeleteTask;
 
 namespace GitClock.Api.Controllers;
 
@@ -36,6 +37,18 @@ public class TaskController : ControllerBase
     public async Task<IActionResult> Put(Guid id, [FromBody] UpdateTaskCommand request)
     {
         request.Id = id;
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(DeleteTaskCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var request = new DeleteTaskCommand { Id = id };
         var response = await _mediator.Send(request);
         return Ok(response);
     }
