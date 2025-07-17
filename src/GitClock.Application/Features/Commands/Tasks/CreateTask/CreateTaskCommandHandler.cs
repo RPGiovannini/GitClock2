@@ -20,7 +20,7 @@ namespace GitClock.Application.Features.Commands.Tasks.CreateTask
         {
             var task = new TaskEntity(request.PersonName, request.Description, request.StartDate, request.EndDate, request.HourlyRate);
 
-            _context.Tasks.Add(task);
+            await _context.Tasks.AddAsync(task, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             return new CreateTaskCommandResponse { Id = task.Id };
