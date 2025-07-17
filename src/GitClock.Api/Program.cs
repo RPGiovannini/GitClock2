@@ -40,9 +40,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddApplication();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddInfrastructure();
+builder.Services.AddApplication();
 builder.Services.AddFluentValidation();
 builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>

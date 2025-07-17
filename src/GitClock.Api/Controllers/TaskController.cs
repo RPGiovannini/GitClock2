@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using GitClock.Application.Features.Commands.Tasks.CreateTask;
-
+using GitClock.Application.Features.Commands.Tasks.UpdateTask;
 
 namespace GitClock.Api.Controllers;
 
@@ -24,6 +24,18 @@ public class TaskController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post([FromBody] CreateTaskCommand request)
     {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(UpdateTaskCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Put(Guid id, [FromBody] UpdateTaskCommand request)
+    {
+        request.Id = id;
         var response = await _mediator.Send(request);
         return Ok(response);
     }
